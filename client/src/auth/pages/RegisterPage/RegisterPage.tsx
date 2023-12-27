@@ -1,13 +1,10 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation } from '@tanstack/react-query';
-import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { InputErrorMessage } from '@/shared/components/forms/InputErrorMessage';
 import { registerFormSchema } from '@/shared/utils';
-import { registerUser } from '@/zustand/auth';
+import { useRegisterUser } from '@/store/auth';
 
 interface RegisterPageProps {}
 
@@ -34,20 +31,7 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
   } = form;
 
   ////* tanstack
-  const registerMutation = useMutation({
-    mutationFn: () => registerUser(form.getValues()),
-    onSuccess: () => {
-      toast.success('Successful registration');
-      reset();
-      return navigate('/auth/login');
-    },
-    onError: err => {
-      if (isAxiosError(err)) return toast.error(err.response?.data.error);
-
-      toast.error('Something went wrong');
-      console.log(err);
-    },
-  });
+  const registerMutation = useRegisterUser(form.getValues(), reset, navigate);
 
   ////* handlers
   const onRegister: SubmitHandler<RegisterFormData> = async () => {
