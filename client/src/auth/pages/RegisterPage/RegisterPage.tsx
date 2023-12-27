@@ -1,9 +1,13 @@
 import { yupResolver } from '@hookform/resolvers/yup';
+import { useMutation } from '@tanstack/react-query';
+import { isAxiosError } from 'axios';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { Link } from 'react-router-dom';
+import { toast } from 'react-hot-toast';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { InputErrorMessage } from '@/shared/components/forms/InputErrorMessage';
 import { registerFormSchema } from '@/shared/utils';
+import { registerUser } from '@/zustand/auth';
 
 interface RegisterPageProps {}
 
@@ -16,15 +20,39 @@ export type RegisterFormData = {
 };
 
 const RegisterPage: React.FC<RegisterPageProps> = () => {
+  const navigate = useNavigate();
+
+  ////* form
+  const form = useForm<RegisterFormData>({
+    resolver: yupResolver(registerFormSchema),
+  });
   const {
     register,
     handleSubmit,
-    // reset,
+    reset,
     formState: { errors },
-  } = useForm<RegisterFormData>({ resolver: yupResolver(registerFormSchema) });
+  } = form;
 
-  const onRegister: SubmitHandler<RegisterFormData> = async formData => {
-    console.log(formData);
+  ////* tanstack
+  const registerMutation = useMutation({
+    mutationFn: () => registerUser(form.getValues()),
+    onSuccess: () => {
+      toast.success('Successful registration');
+      reset();
+      return navigate('/auth/login');
+    },
+    onError: err => {
+      if (isAxiosError(err)) return toast.error(err.response?.data.error);
+
+      toast.error('Something went wrong');
+      console.log(err);
+    },
+  });
+
+  ////* handlers
+  const onRegister: SubmitHandler<RegisterFormData> = async () => {
+    if (registerMutation.isPending) return;
+    registerMutation.mutate();
   };
 
   return (
@@ -145,7 +173,8 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
           {/* ----- Submit ----- */}
           <button
             type="submit"
-            className="w-full bg-blue-500 text-white px-4 py-2 mt-2 mb-4 rounded-lg hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50"
+            className="w-full bg-blue-600 text-white px-4 py-2 mt-2 mb-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-400"
+            disabled={registerMutation.isPending}
           >
             Register
           </button>
