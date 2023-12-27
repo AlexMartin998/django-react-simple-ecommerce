@@ -1,0 +1,200 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# C extensions
+*.so
+*.pyd
+*.dll
+
+# Distribution / packaging
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Django
+*.log
+*.pot
+*.pyc
+db.sqlite3
+db.sqlite3-journal
+media/
+staticfiles/
+local_settings.py
+
+# Sphinx documentation
+docs/_build/
+
+# PyInstaller
+build/
+dist/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# IPython
+profile_default/
+ipython_config.py
+
+# pyenv
+.python-version
+
+# pipenv
+/.venv
+.Python
+pip-log.txt
+
+# Virtualenv
+venv/
+ENV/
+env/
+
+# Spyder project settings
+.spyderproject
+.spyproject
+
+# Rope project settings
+.ropeproject
+
+# Sublime Text
+*.tmlanguage.cache
+*.tmPreferences.cache
+*.stTheme.cache
+*.sublime-workspace
+*.sublime-project
+*.sublime-project.cache
+
+# VS Code
+.vscode/
+*.code-workspace
+
+# DS_Store files
+.DS_Store
+
+# macOS
+.AppleDouble
+.AppleDesktop
+.AppleDB
+.AppleDesktopNetwork
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Recycle Bin used on file shares
+$RECYCLE.BIN/
+
+# LaTeX
+*.aux
+*.bbl
+*.blg
+*.log
+*.out
+*.synctex.gz
+*.fls
+*.fdb_latexmk
+*.pdfsync
+
+# PyCharm
+.idea/
+*.iml
+*.iws
+*.ipr
+
+# Eclipse
+.project
+.classpath
+.settings/
+
+# Visual Studio Code
+.vscode/
+*.code-workspace
+
+# Atom
+.atom/
+
+# Jupyter Notebook
+.ipynb_checkpoints/
+
+# IPython
+.profile/
+ipython_checkpoints/
+
+# mypy
+.mypy_cache/
+
+# Pyre type checker
+.pyre/
+
+# Pylance (VSCode)
+.pylance/
+
+# Celery
+celerybeat-schedule
+celerybeat.pid
+
+# SageMath
+.sageMath
+.sageMath/*
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+
+# .env file
+.env
+
+# Spyder project settings
+.spyderproject
+
+# Rope project settings
+.ropeproject
+
+# mkdocs documentation
+/site/
+
+# mypy
+.mypy_cache/
+
+# Pyre
+.pyre/
+
+# pytest
+__pycache__/
+.cache/
+.pytest_cache/
+
+# Salt
+salt/__pycache__/
+salt/cache/
+
+# CTags
+tags
+
+# Python bytecode
+*.pyc
+*.pyo
+*.pyd
+notes*md
+
+# Jupyter
+.ipynb_checkpoints/
