@@ -6,13 +6,17 @@ from django.shortcuts import get_object_or_404
 from .models import Product
 from .serializers import ProductSerializer
 
+from backend.pagination import CustomPagination
+
 
 
 @api_view(['GET'])
 def get_products(request):
     products = Product.objects.all()
-    serializer = ProductSerializer(products, many=True) # todos
-    return Response(serializer.data)
+    pagination = CustomPagination()
+    paginated_products = pagination.paginate_queryset(products, request)
+    serializer = ProductSerializer(paginated_products, many=True) # todos
+    return pagination.get_paginated_response(serializer.data) # resp pagination
 
 
 @api_view(['GET'])
