@@ -20,7 +20,7 @@ def register(request):
             password=make_password(data['password']),
         )
         serializer = RegisterUserSerializer(user, many = False)
-        return Response(serializer.data)
+        return Response(serializer.data, status=201)
     except IntegrityError:
         return Response({'error': 'Email already registered'}, status=400)
 
