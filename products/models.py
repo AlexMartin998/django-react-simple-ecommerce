@@ -22,11 +22,12 @@ class Product(models.Model):
 
 
 class Reviews(models.Model):
+    description = models.CharField(max_length=100, blank=True)
+    rating = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    created_at = models.DateTimeField(auto_now_add=True) # createdAt x default
+
     # ## Relations
     # (Product 1:N Reviews)
     product = models.ForeignKey(Product, on_delete=models.SET_NULL, null=True)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
-    description = models.CharField(max_length=100, blank=True)
-    rating = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
-    created_at = models.DateTimeField(auto_now_add=True) # createdAt x default
 
