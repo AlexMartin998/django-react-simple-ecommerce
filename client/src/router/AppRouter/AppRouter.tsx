@@ -6,6 +6,7 @@ import { ShopLayout } from '@/ecommerce/layouts/ShopLayout';
 import { LoginPage } from '@/auth/pages/LoginPage';
 import { RegisterPage } from '@/auth/pages/RegisterPage';
 import { HomePage } from '@/ecommerce/pages/HomePage';
+import { AuthRoute } from '../AuthRoute';
 
 export interface AppRouterProps {}
 
@@ -17,7 +18,14 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           <Route index element={<HomePage />} />
         </Route>
 
-        <Route path="/auth" element={<AuthLayout />}>
+        <Route
+          path="/auth"
+          element={
+            <AuthRoute>
+              <AuthLayout />
+            </AuthRoute>
+          }
+        >
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="" element={<Navigate to="/auth/login" replace />} />
