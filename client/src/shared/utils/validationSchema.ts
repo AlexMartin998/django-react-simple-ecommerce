@@ -9,7 +9,7 @@ const emailYupValidation = yup
   )
   .required('Email is requiered')
   .min(5, 'Min 5 characteres')
-  .max(24, 'Max 12 characteres');
+  .max(48, 'Max 48 characteres');
 
 const passwordYupValidation = yup
   .string()
