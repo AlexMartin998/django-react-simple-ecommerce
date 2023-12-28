@@ -35,3 +35,8 @@ export const registerFormSchema = yup.object({
     .required('Confirm password is requiered')
     .oneOf([yup.ref('password')], 'Passwords must match'),
 });
+
+export const loginFormSchema = yup.object({
+  email: emailYupValidation,
+  password: passwordYupValidation,
+});
