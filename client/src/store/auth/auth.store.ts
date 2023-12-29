@@ -1,10 +1,14 @@
+import jwtDecode from 'jwt-decode';
 import { create } from 'zustand';
 import { persist } from 'zustand/middleware';
+
+import { Token } from '@/auth/shared/interfaces';
 
 type State = {
   access: string;
   refresh: string;
   isAuth: boolean;
+  isAdmin: boolean;
 };
 
 type Actions = {
@@ -21,17 +25,22 @@ export const useAuthStore = create<State & Actions>()(
       access: '',
       refresh: '',
       isAuth: false,
+      isAdmin: false,
 
       ////* actions
+      // LoginLike
       setToken(access: string, refresh: string) {
+        const tokenDecoded: Token = jwtDecode(access);
+
         set(() => ({
           access,
           refresh,
           isAuth: !!access && !!refresh,
+          isAdmin: (!!access && !!refresh && tokenDecoded.is_staff) || false,
         }));
       },
       logout() {
-        set({ access: '', refresh: '', isAuth: false });
+        set({ access: '', refresh: '', isAuth: false, isAdmin: false });
       },
     }),
 
