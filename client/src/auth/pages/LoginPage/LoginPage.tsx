@@ -30,7 +30,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
 
   ////* handlers
   const onLogin: SubmitHandler<LoginFormData> = async () => {
-    if (loginMutation.isPending) return;
+    if (loginMutation.isLoading) return;
     loginMutation.mutate();
   };
 
@@ -98,7 +98,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white px-4 py-2 mt-2 mb-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-400"
-            disabled={loginMutation.isPending}
+            disabled={loginMutation.isLoading}
           >
             Log in
           </button>
@@ -106,7 +106,7 @@ const LoginPage: React.FC<LoginPageProps> = () => {
           <p className="text-sm font-light text-gray-500 dark:text-gray-400 text-center">
             Don't have an account?{' '}
             <Link
-              to={'/auth/login'}
+              to={'/auth/register'}
               className="font-medium text-primary-600 hover:underline dark:text-primary-500"
             >
               Register
