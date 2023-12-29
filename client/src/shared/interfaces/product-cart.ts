@@ -1,16 +1,12 @@
-import { Review } from '.';
-
-export interface Product {
+export interface ProductCart {
   id?: number;
-  reviews: Review[];
   name: string;
   image: File | string | null;
   category: string;
   count_in_stock: number;
-  created_at: string;
   description?: string;
   rating?: string;
   num_reviews?: number;
-  price: string;
-  // user: number;
+  price: number;
+  quantity: number;
 }
