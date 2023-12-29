@@ -1,12 +1,14 @@
 import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
+import { AuthRoute } from '../AuthRoute';
+
+import { AdminLayout } from '@/admin/layouts/AdminLayout';
 import { AuthLayout } from '@/auth/layouts/AuthLayout';
 import { ShopLayout } from '@/ecommerce/layouts/ShopLayout';
 
-import { LoginPage } from '@/auth/pages/LoginPage';
-import { RegisterPage } from '@/auth/pages/RegisterPage';
-import { HomePage } from '@/ecommerce/pages/HomePage';
-import { AuthRoute } from '../AuthRoute';
+import { AdminPage } from '@/admin/pages';
+import { LoginPage, RegisterPage } from '@/auth/pages';
+import { HomePage } from '@/ecommerce/pages';
 
 export interface AppRouterProps {}
 
@@ -29,6 +31,10 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           <Route path="login" element={<LoginPage />} />
           <Route path="register" element={<RegisterPage />} />
           <Route path="" element={<Navigate to="/auth/login" replace />} />
+        </Route>
+
+        <Route path="/admin" element={<AdminLayout />}>
+          <Route index element={<AdminPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
