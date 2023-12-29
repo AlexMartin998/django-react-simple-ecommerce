@@ -1,6 +1,8 @@
 import { Disclosure } from '@headlessui/react';
 import { Link } from 'react-router-dom';
 
+import { ProductSearcher } from '.';
+
 export type MobileNavbarProps = {
   isAuth: boolean;
   isAdmin: boolean;
@@ -28,7 +30,8 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isAdmin, isAuth }) => {
           <span className="sr-only">Search icon</span>
         </div>
 
-        <input
+        <ProductSearcher />
+        {/* <input
           type="text"
           id="search-navbar"
           className="block w-full p-2
@@ -37,7 +40,7 @@ const MobileNavbar: React.FC<MobileNavbarProps> = ({ isAdmin, isAuth }) => {
         dark:border-gray-600 dark:placeholder-gray-400 dark:text-white  
         "
           placeholder="Search..."
-        />
+        /> */}
       </div>
 
       {/* ===== Navbar ===== */}
