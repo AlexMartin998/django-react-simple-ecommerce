@@ -1,13 +1,16 @@
 import axios, { AxiosRequestHeaders } from 'axios';
 
 import { useAuthStore } from '@/store/auth';
+import { getEnvs } from '../utils';
+
+const { VITE_API_URL } = getEnvs();
 
 export const ecomApi = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: VITE_API_URL,
 });
 
 export const ecomApiAuth = axios.create({
-  baseURL: import.meta.env.VITE_API_URL,
+  baseURL: VITE_API_URL,
   withCredentials: true,
 });
 
