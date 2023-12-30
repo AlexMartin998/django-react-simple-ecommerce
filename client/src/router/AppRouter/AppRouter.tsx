@@ -7,7 +7,7 @@ import { AdminLayout } from '@/admin/layouts/AdminLayout';
 import { AuthLayout } from '@/auth/layouts/AuthLayout';
 import { ShopLayout } from '@/ecommerce/layouts/ShopLayout';
 
-import { AdminPage } from '@/admin/pages';
+import { AdminPage, NewProductPage } from '@/admin/pages';
 import { LoginPage, RegisterPage } from '@/auth/pages';
 import { HomePage } from '@/ecommerce/pages';
 
@@ -16,11 +16,13 @@ export interface AppRouterProps {}
 const AppRouter: React.FC<AppRouterProps> = () => {
   return (
     <BrowserRouter>
+      {/* ========= Public Routes ========= */}
       <Routes>
         <Route path="/" element={<ShopLayout />}>
           <Route index element={<HomePage />} />
         </Route>
 
+        {/* ========= Auth Routes ========= */}
         <Route
           path="/auth"
           element={
@@ -34,6 +36,7 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           <Route path="" element={<Navigate to="/auth/login" replace />} />
         </Route>
 
+        {/* ========= Admin Routes ========= */}
         <Route
           path="/admin"
           element={
@@ -43,6 +46,9 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           }
         >
           <Route index element={<AdminPage />} />
+
+          {/* ----- Products ----- */}
+          <Route path="products/new" element={<NewProductPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
