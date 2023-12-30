@@ -1,3 +1,3 @@
 export { default as Orders } from './Orders';
-export * from './Products';
+export * from './ProductsScene';
 export { default as Users } from './Users';
