@@ -6,7 +6,14 @@ import {
 import { toast } from 'react-hot-toast';
 
 import { ecomApi, ecomApiAuth } from '@/shared/axios';
-import { ProductsResponse } from '@/shared/interfaces';
+import { ProductsResponse, ProductsSearchResponse } from '@/shared/interfaces';
+
+export const searchProduct = async (query: string) => {
+  const response = await ecomApiAuth.get<ProductsSearchResponse>(
+    `/products/search/?query=${query}`
+  );
+  return response.data;
+};
 
 export const useInfiniteQueryProducts = () =>
   useInfiniteQuery(['products'], getProducts, {
