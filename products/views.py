@@ -27,6 +27,18 @@ def get_product(request, id):
     return Response(serializer.data)
 
 
+# ## Search
+@api_view(['GET'])
+def search(request):
+    query = request.query_params.get('query')
+    if query is None:
+        query = ''
+    product = Product.objects.filter(name__icontains=query)
+    serializer = ProductSerializer(product, many=True)
+    return Response({'products': serializer.data})
+
+
+
 @api_view(['POST'])
 def create_product(request):
     if request.user.is_staff: # solo si es Admin
