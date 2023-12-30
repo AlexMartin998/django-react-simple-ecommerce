@@ -1,5 +1,6 @@
 import * as yup from 'yup';
 
+////* Auth
 const emailYupValidation = yup
   .string()
   .matches(
@@ -39,4 +40,21 @@ export const registerFormSchema = yup.object({
 export const loginFormSchema = yup.object({
   email: emailYupValidation,
   password: passwordYupValidation,
+});
+
+////* Products
+export const newProductFormSchema = yup.object({
+  name: yup.string().required('Name is required'),
+  countInStock: yup
+    .number()
+    .typeError('Count in Stocke is required')
+    .required('Please provide count in stock')
+    .min(1, 'It must be greater than or equal to 1'),
+  price: yup
+    .number()
+    .typeError('Price is required')
+    .required('Please provide price')
+    .min(0, 'It must be greater than or equal to 0'),
+  category: yup.string().required('Category is required'),
+  description: yup.string().required('Description is required'),
 });
