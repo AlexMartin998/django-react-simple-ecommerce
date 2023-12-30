@@ -6,7 +6,11 @@ import {
 import { toast } from 'react-hot-toast';
 
 import { ecomApi, ecomApiAuth } from '@/shared/axios';
-import { ProductsResponse, ProductsSearchResponse } from '@/shared/interfaces';
+import {
+  Product,
+  ProductsResponse,
+  ProductsSearchResponse,
+} from '@/shared/interfaces';
 
 export const searchProduct = async (query: string) => {
   const response = await ecomApiAuth.get<ProductsSearchResponse>(
@@ -42,6 +46,21 @@ export const getProducts = async ({ pageParam = 1 }) => {
   );
 
   return response.data;
+};
+
+export const createProductWithFile = async (data: Product) => {
+  const formData = new FormData();
+  formData.append('name', data.name);
+  formData.append('description', data.description ?? '');
+  formData.append('count_in_stock', data.count_in_stock.toString());
+  formData.append('category', data.category);
+  formData.append('price', data.price.toString());
+
+  if (data.image) {
+    formData.append('image', data.image);
+  }
+
+  await ecomApiAuth.post('/products/post/', formData);
 };
 
 const deleteProduct = async (id: number) =>
