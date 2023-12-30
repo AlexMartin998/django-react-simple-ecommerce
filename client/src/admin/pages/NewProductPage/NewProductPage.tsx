@@ -1,17 +1,25 @@
-import { createProductWithFile } from '@/store/products';
+import { yupResolver } from '@hookform/resolvers/yup';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useRef, useState } from 'react';
+import { SubmitHandler, useForm } from 'react-hook-form';
 import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
+import { InputErrorMessage } from '@/shared/components/forms/InputErrorMessage';
+import { newProductFormSchema } from '@/shared/utils';
+import { createProductWithFile } from '@/store/products';
+
 export interface NewProductPageProps {}
 
+export type NewProductFormData = {
+  name: string;
+  countInStock: number;
+  price: number;
+  category: string;
+  description: string;
+};
+
 const NewProductPage: React.FC<NewProductPageProps> = () => {
-  const [name, setName] = useState<string>('');
-  const [countInStock, setCountInStock] = useState<number>(0);
-  const [category, setCategory] = useState<string>('');
-  const [description, setDescription] = useState<string>('');
-  const [price, setPrice] = useState<number>(0);
   const [image, setImage] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>('');
   const inputRef = useRef<HTMLInputElement>(null);
@@ -20,6 +28,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
 
+  ////* mutation
   const addProdMutation = useMutation({
     mutationFn: async (some: any) => {
       console.log(some);
@@ -36,40 +45,29 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
     },
   });
 
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
+  ////* form
+  const form = useForm<NewProductFormData>({
+    resolver: yupResolver(newProductFormSchema),
+  });
+  const {
+    register,
+    handleSubmit,
+    // reset,
+    formState: { errors },
+  } = form;
+
+  const onNewProduct: SubmitHandler<NewProductFormData> = formData => {
     addProdMutation.mutate({
-      name: name,
-      count_in_stock: countInStock,
-      category: category,
-      description: description,
-      price: price,
+      name: formData.name,
+      count_in_stock: formData.countInStock,
+      category: formData.category,
+      description: formData.description,
+      price: formData.price,
       image: image,
     });
   };
 
-  const handleNameChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setName(event.target.value);
-  };
-
-  const handleCategoryChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setCategory(event.target.value);
-  };
-
-  const handleDescriptionChange = (event: ChangeEvent<HTMLInputElement>) => {
-    setDescription(event.target.value);
-  };
-
-  const handleCountChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = parseInt(event.target.value, 10);
-    setCountInStock(newNumber);
-  };
-
-  const handlePriceChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const newNumber = parseInt(event.target.value, 10);
-    setPrice(newNumber);
-  };
-
+  ////* handlers
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
     if (file) {
@@ -82,6 +80,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
     }
   };
 
+  /// drag & drop
   const handleDragEnter = (event: React.DragEvent<HTMLLabelElement>) => {
     event.preventDefault();
     setIsHovered(true);
@@ -132,8 +131,9 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
             </div>
 
             {/* ============ Form ============ */}
-            <form onSubmit={handleSubmit}>
+            <form onSubmit={handleSubmit(onNewProduct)} noValidate>
               <div className="grid gap-4 mb-4 sm:grid-cols-2">
+                {/* ----- name ----- */}
                 <div>
                   <label
                     htmlFor="name"
@@ -142,16 +142,17 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                     Name
                   </label>
                   <input
-                    value={name}
-                    onChange={handleNameChange}
+                    {...register('name')}
                     type="text"
-                    name="name"
                     id="name"
+                    required
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Type product name"
                   />
+                  <InputErrorMessage error={errors.name?.message} />
                 </div>
 
+                {/* ----- count in stock ----- */}
                 <div>
                   <label
                     htmlFor="count_in_stock"
@@ -160,16 +161,17 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                     Count in Stock
                   </label>
                   <input
-                    value={countInStock}
-                    onChange={handleCountChange}
+                    {...register('countInStock')}
                     type="number"
-                    name="count_in_stock"
                     id="count_in_stock"
+                    min={1}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Count in Stock"
                   />
+                  <InputErrorMessage error={errors.countInStock?.message} />
                 </div>
 
+                {/* ----- price ----- */}
                 <div>
                   <label
                     htmlFor="price"
@@ -178,16 +180,18 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                     Price
                   </label>
                   <input
-                    value={price}
-                    onChange={handlePriceChange}
+                    {...register('price')}
+                    required
                     type="number"
-                    name="price"
                     id="price"
+                    min={0}
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="$2999"
                   />
+                  <InputErrorMessage error={errors.price?.message} />
                 </div>
 
+                {/* ----- category ----- */}
                 <div>
                   <label
                     htmlFor="category"
@@ -196,16 +200,17 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                     Category
                   </label>
                   <input
-                    value={category}
-                    onChange={handleCategoryChange}
+                    {...register('category')}
+                    required
                     type="text"
-                    name="category"
                     id="category"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-600 focus:border-primary-600 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Category"
                   />
+                  <InputErrorMessage error={errors.category?.message} />
                 </div>
 
+                {/* ----- description ----- */}
                 <div className="sm:col-span-2">
                   <label
                     htmlFor="description"
@@ -214,12 +219,13 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                     Description
                   </label>
                   <input
-                    value={description}
-                    onChange={handleDescriptionChange}
+                    {...register('description')}
+                    required
                     id="description"
                     className="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-lg border border-gray-300 focus:ring-primary-500 focus:border-primary-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
                     placeholder="Write product description here"
                   ></input>
+                  <InputErrorMessage error={errors.description?.message} />
                 </div>
 
                 {/* ======== Drag and Drop ======== */}
@@ -261,7 +267,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                           </p>
                         </div>
 
-                        {/* ----- Actual Input ----- */}
+                        {/* ----- Input File / Image ----- */}
                         <input
                           ref={inputRef}
                           type="file"
@@ -269,7 +275,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                           multiple={true}
                           onChange={handleFileChange}
                           className="absolute w-full h-[300px] opacity-0"
-                          accept='image/*'
+                          accept="image/*"
                         />
                       </label>
                     ) : (
@@ -296,6 +302,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                           </svg>
                           <span className="sr-only">Close modal</span>
                         </button>
+
                         <img
                           className="h-48 w-96"
                           src={filePreview}
