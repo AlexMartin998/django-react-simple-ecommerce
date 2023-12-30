@@ -62,6 +62,35 @@ export const useProductCreateMutation = (navigate: NavigateFunction) => {
   });
 };
 
+export const useProductUpdateMutation = (navigate: NavigateFunction) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (productLike: any) => {
+      const formData = new FormData();
+      formData.append('name', productLike.name);
+      formData.append('description', productLike.description);
+      formData.append('count_in_stock', productLike.count_in_stock.toString());
+      formData.append('category', productLike.category);
+      formData.append('price', productLike.price.toString());
+      if (productLike.image && productLike.updImg) {
+        formData.append('image', productLike.image);
+      }
+
+      return ecomApiAuth.put(`/products/edit/${productLike.id}/`, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success('Product updated!');
+      navigate('/admin');
+    },
+    onError: () => {
+      toast.error('Error!');
+      navigate('/admin');
+    },
+  });
+};
+
 ////* actions
 export const searchProduct = async (query: string) => {
   const response = await ecomApiAuth.get<ProductsSearchResponse>(
