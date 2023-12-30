@@ -1,6 +1,7 @@
 import {
   useInfiniteQuery,
   useMutation,
+  useQuery,
   useQueryClient,
 } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
@@ -12,13 +13,6 @@ import {
   ProductsResponse,
   ProductsSearchResponse,
 } from '@/shared/interfaces';
-
-export const searchProduct = async (query: string) => {
-  const response = await ecomApiAuth.get<ProductsSearchResponse>(
-    `/products/search/?query=${query}`
-  );
-  return response.data;
-};
 
 export const useInfiniteQueryProducts = () =>
   useInfiniteQuery(['products'], getProducts, {
@@ -40,6 +34,17 @@ export const useProductDeleteMutation = () => {
   });
 };
 
+export const useGetProductQuery = (id: number) => {
+  return useQuery({
+    queryKey: ['product'],
+    queryFn: async () => {
+      const { data } = await ecomApi.get<Product>(`/products/get/${id}/`);
+      return data;
+    },
+    retry: false,
+  });
+};
+
 export const useProductCreateMutation = (navigate: NavigateFunction) => {
   const queryClient = useQueryClient();
 
@@ -58,6 +63,13 @@ export const useProductCreateMutation = (navigate: NavigateFunction) => {
 };
 
 ////* actions
+export const searchProduct = async (query: string) => {
+  const response = await ecomApiAuth.get<ProductsSearchResponse>(
+    `/products/search/?query=${query}`
+  );
+  return response.data;
+};
+
 export const getProducts = async ({ pageParam = 1 }) => {
   const response = await ecomApi.get<ProductsResponse>(
     `/products/?page=${pageParam}&pages=9`
