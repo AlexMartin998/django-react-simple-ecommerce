@@ -53,7 +53,7 @@ const ProductsScene: React.FC<ProductsProps> = ({ results }) => {
 
             <th scope="col" className="px-4 py-3 flex justify-center gap-4">
               Actions
-              <Link to="/products/new">
+              <Link to="/admin/products/new">
                 <AiFillPlusSquare
                   size={22}
                   className="text-green-300 cursor-pointer"
