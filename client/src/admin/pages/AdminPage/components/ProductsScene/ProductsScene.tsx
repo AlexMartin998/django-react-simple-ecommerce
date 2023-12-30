@@ -1,13 +1,12 @@
 /* eslint-disable indent */
 
-import { useInfiniteQuery } from '@tanstack/react-query';
 import { useEffect } from 'react';
 import { AiFillPlusSquare } from 'react-icons/ai';
 import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 
 import { Loader } from '@/shared/components/ui';
-import { getProducts } from '@/store/products';
+import { useInfiniteQueryProducts } from '@/store/products';
 import { ProductsTBody } from '.';
 
 export type ProductsProps = {
@@ -25,9 +24,7 @@ const ProductsScene: React.FC<ProductsProps> = ({ results }) => {
     isFetchingNextPage,
     fetchNextPage,
     hasNextPage,
-  } = useInfiniteQuery(['products'], getProducts, {
-    getNextPageParam: (page: any) => page.meta.next,
-  });
+  } = useInfiniteQueryProducts();
 
   ////* effects
   // infinite scroll
