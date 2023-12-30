@@ -4,6 +4,7 @@ import {
   useQueryClient,
 } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
+import { NavigateFunction } from 'react-router-dom';
 
 import { ecomApi, ecomApiAuth } from '@/shared/axios';
 import {
@@ -35,6 +36,23 @@ export const useProductDeleteMutation = () => {
     },
     onError: () => {
       toast.error('Error!');
+    },
+  });
+};
+
+export const useProductCreateMutation = (navigate: NavigateFunction) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: (productLike: any) => createProductWithFile(productLike),
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success('Product created!');
+      navigate('/admin');
+    },
+    onError: () => {
+      toast.error('Error!');
+      navigate('/admin');
     },
   });
 };

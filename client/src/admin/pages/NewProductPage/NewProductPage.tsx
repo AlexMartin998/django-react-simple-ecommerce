@@ -1,13 +1,11 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { ChangeEvent, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
-import { toast } from 'react-hot-toast';
 import { Link, useNavigate } from 'react-router-dom';
 
 import { InputErrorMessage } from '@/shared/components/forms/InputErrorMessage';
 import { newProductFormSchema } from '@/shared/utils';
-import { createProductWithFile } from '@/store/products';
+import { useProductCreateMutation } from '@/store/products';
 
 export interface NewProductPageProps {}
 
@@ -22,28 +20,13 @@ export type NewProductFormData = {
 const NewProductPage: React.FC<NewProductPageProps> = () => {
   const [image, setImage] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string>('');
-  const inputRef = useRef<HTMLInputElement>(null);
   const [isHovered, setIsHovered] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
   const navigate = useNavigate();
-  const queryClient = useQueryClient();
 
   ////* mutation
-  const addProdMutation = useMutation({
-    mutationFn: async (some: any) => {
-      console.log(some);
-      return createProductWithFile(some);
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product created!');
-      navigate('/admin');
-    },
-    onError: () => {
-      toast.error('Error!');
-      navigate('/admin');
-    },
-  });
+  const addProdMutation = useProductCreateMutation(navigate);
 
   ////* form
   const form = useForm<NewProductFormData>({
@@ -52,7 +35,6 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
   const {
     register,
     handleSubmit,
-    // reset,
     formState: { errors },
   } = form;
 
@@ -70,14 +52,14 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
   ////* handlers
   const handleFileChange = (event: ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files && event.target.files[0];
-    if (file) {
-      setImage(file);
-      const reader = new FileReader();
-      reader.onload = () => {
-        setFilePreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+
+    setImage(file);
+    const reader = new FileReader();
+    reader.onload = () => {
+      setFilePreview(reader.result as string);
+    };
+    reader.readAsDataURL(file);
   };
 
   /// drag & drop
@@ -231,7 +213,8 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                 {/* ======== Drag and Drop ======== */}
                 <div className="sm:col-span-2">
                   <div className="flex items-center justify-center w-full">
-                    {image === null ? (
+                    {!image ? (
+                      // drop box is a label with styles > input file (wrapped)
                       <label
                         htmlFor="dropzone-file"
                         className={`flex flex-col items-center justify-center w-full h-64 border-2 border-gray-600 border-dashed rounded-lg cursor-pointer  bg-gray-40 ${
@@ -269,7 +252,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
 
                         {/* ----- Input File / Image ----- */}
                         <input
-                          ref={inputRef}
+                          ref={fileInputRef}
                           type="file"
                           id="dropzone-file"
                           multiple={true}
@@ -306,7 +289,7 @@ const NewProductPage: React.FC<NewProductPageProps> = () => {
                         <img
                           className="h-48 w-96"
                           src={filePreview}
-                          alt="Imagen seleccionada"
+                          alt="Selected Image"
                         />
                       </div>
                     )}
