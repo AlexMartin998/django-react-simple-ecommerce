@@ -39,7 +39,7 @@ const ProductsTr: React.FC<ProductsTrProps> = ({ data }) => {
                 className="text-red-300 cursor-pointer"
               />
 
-              <Link to={`/products/edit/${product.id}`}>
+              <Link to={`/admin/products/edit/${product.id}`}>
                 <AiFillEdit size={22} className="text-white cursor-pointer" />
               </Link>
             </div>
