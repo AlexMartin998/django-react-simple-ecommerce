@@ -2,14 +2,17 @@ import { BrowserRouter, Navigate, Route, Routes } from 'react-router-dom';
 
 import { AdminRoute } from '../AdminRoute';
 import { AuthRoute } from '../AuthRoute';
+import { PrivateRoute } from '../PrivateRoute';
 
 import { AdminLayout } from '@/admin/layouts/AdminLayout';
 import { AuthLayout } from '@/auth/layouts/AuthLayout';
+import { DashboardLayout } from '@/dashboard/layouts';
 import { ShopLayout } from '@/ecommerce/layouts/ShopLayout';
 
 import { AdminPage, EditProductPage, NewProductPage } from '@/admin/pages';
 import { LoginPage, RegisterPage } from '@/auth/pages';
-import { HomePage } from '@/ecommerce/pages';
+import { ProfilePage } from '@/dashboard/pages';
+import { CartPage, HomePage } from '@/ecommerce/pages';
 
 export interface AppRouterProps {}
 
@@ -20,6 +23,19 @@ const AppRouter: React.FC<AppRouterProps> = () => {
       <Routes>
         <Route path="/" element={<ShopLayout />}>
           <Route index element={<HomePage />} />
+          <Route path="cart" element={<CartPage />} />
+        </Route>
+
+        {/* ========= Private Routes ========= */}
+        <Route
+          path="/dashboard"
+          element={
+            <PrivateRoute>
+              <DashboardLayout />
+            </PrivateRoute>
+          }
+        >
+          <Route path="profile" element={<ProfilePage />} />
         </Route>
 
         {/* ========= Auth Routes ========= */}
