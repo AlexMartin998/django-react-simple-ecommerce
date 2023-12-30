@@ -36,6 +36,7 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           }
         >
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="" element={<Navigate to="/" replace />} />
         </Route>
 
         {/* ========= Auth Routes ========= */}
