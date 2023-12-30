@@ -4,12 +4,12 @@ import { Fragment } from 'react';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
-import { getEnvs } from '@/shared/utils';
+// import { getEnvs } from '@/shared/utils';
 import { useAuthStore } from '@/store/auth';
 import { useCartStore } from '@/store/cart';
 import { DarkModeToggle, MobileNavbar, ProductSearcher } from './components';
 
-const { VITE_API_URL } = getEnvs();
+// const { VITE_API_URL } = getEnvs();
 
 export interface HeaderProps {}
 
@@ -190,7 +190,7 @@ const Header: React.FC<HeaderProps> = () => {
                         <Menu.Item>
                           {({ active }) => (
                             <Link
-                              to="/profile"
+                              to="/dashboard/profile"
                               className={classNames(
                                 active ? 'bg-gray-100 dark:bg-slate-700' : '',
                                 'block px-4 py-2 text-sm text-gray-700 dark:text-slate-200'
