@@ -1,7 +1,9 @@
 import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
+import { toast } from 'react-hot-toast';
 
 import { searchProduct } from '@/store/products';
+import { searchUsers } from '@/store/users';
 import { Orders, ProductsScene, Users } from './components';
 
 export interface AdminPageProps {}
@@ -13,29 +15,33 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   ////* queries
   const { data } = useQuery({
     queryKey: ['products', search],
-    queryFn: () => {
-      if (search && show === 0) return searchProduct(search);
+    // TODO: debouncer | set to store result and do not pass results by props, clear store when search input is clean
+    queryFn: async () => {
+      //* detecta los cambios del state search y se ejecuta
+      if (search && show === 0) {
+        // console.log('searching...');
+        const res = await searchProduct(search);
+        if (!res.products.length) toast.error('Nothing found');
+        return res;
+      }
       return { products: [] };
-      setSearch('');
     },
   });
-  /* 
-	    const { data } = useQuery({
-        queryKey: ["products", search],
-        queryFn: () => {
-            if (search && show === 0) {
-                return search_prod(search);
-            }
-            return { products: [] };
-        },
-    });
-	*/
+
+  const { data: users } = useQuery({
+    queryKey: ['users', search],
+    queryFn: () => {
+      if (search && show === 2) return searchUsers(search);
+      return { users: [] };
+    },
+  });
 
   return (
     <section className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-5">
       <div className="mx-auto max-w-screen-xl px-4 lg:px-12">
         <div className="bg-white dark:bg-gray-800 relative shadow-md sm:rounded-lg overflow-hidden">
           <div className="flex flex-col md:flex-row items-center justify-between space-y-3 md:space-y-0 md:space-x-4 p-4">
+            {/* ======= Searcher ======= */}
             <div className="w-full md:w-1/2">
               <form className="flex items-center">
                 <label htmlFor="simple-search" className="sr-only">
@@ -58,6 +64,8 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                   </div>
 
                   <input
+                    value={search}
+                    onChange={e => setSearch(e.target.value)}
                     type="text"
                     id="simple-search"
                     className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-primary-500 focus:border-primary-500 block w-full pl-10 p-2 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-primary-500 dark:focus:border-primary-500"
@@ -66,6 +74,8 @@ const AdminPage: React.FC<AdminPageProps> = () => {
                 </div>
               </form>
             </div>
+
+            {/* ======= Tabs ======= */}
             <div className="w-full md:w-auto flex flex-col md:flex-row space-y-2 md:space-y-0 items-stretch md:items-center justify-end md:space-x-3 flex-shrink-0">
               <button
                 onClick={() => setShow(0)}
@@ -94,7 +104,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
           {/* ============ Scenes ============ */}
           {show === 0 && <ProductsScene results={data} />}
           {show === 1 && <Orders />}
-          {show === 2 && <Users />}
+          {show === 2 && <Users results={users} />}
         </div>
       </div>
     </section>
