@@ -153,7 +153,7 @@ STATIC_ROOT = os.path.join(BASE_DIR, 'static')
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'dist/static')
 ]
-MEDIA_URL = 'media/'
+MEDIA_URL = 'media/' # se guarda en este dir las images q envio del product
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 

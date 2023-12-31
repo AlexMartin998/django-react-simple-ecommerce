@@ -15,9 +15,15 @@ class Product(models.Model):
     price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
     count_in_stock = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True) # createdAt x default
+    slug = models.SlugField(unique=True, max_length=50, null=True, blank=True)
 
     # ## Relations (User 1:N Products)
     user = models.ForeignKey(User, on_delete=models.SET_NULL, null=True)
+
+    class Meta:
+        indexes = [
+            models.Index(fields=['slug']) # create index for slug field
+        ]
 
 
 
