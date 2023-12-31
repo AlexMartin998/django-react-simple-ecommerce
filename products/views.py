@@ -2,6 +2,7 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework import status
 from django.shortcuts import get_object_or_404
+from django.utils.text import slugify
 
 from .models import Product
 from .serializers import ProductSerializer
@@ -27,6 +28,13 @@ def get_product(request, id):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def get_product_by_slug(request, slug):
+    product = get_object_or_404(Product, slug=slug)
+    serializer = ProductSerializer(product, many=False) # solo 1
+    return Response(serializer.data)
+
+
 # ## Search
 @api_view(['GET'])
 def search(request):
@@ -44,7 +52,14 @@ def create_product(request):
     if request.user.is_staff: # solo si es Admin
         serializer = ProductSerializer(data=request.data)
         if serializer.is_valid():
-            serializer.save(user=request.user)
+            name = serializer.validated_data['name']
+            category = serializer.validated_data['category']
+            slug_to_save = name + category
+            slug = slugify(slug_to_save)
+            # validar si existe el slug (warro?)
+            if serializer.Meta.model.objects.filter(slug=slug).exists():
+                return Response({'error': 'Slug already exists'}, status=status.HTTP_400_BAD_REQUEST)
+            serializer.save(user=request.user, slug=slug)
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
     else:
