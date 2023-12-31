@@ -12,5 +12,6 @@ export interface Product {
   rating?: string;
   num_reviews?: number;
   price: string;
+  slug: string;
   // user: number;
 }

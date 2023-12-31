@@ -19,21 +19,6 @@ export const useInfiniteQueryProducts = () =>
     getNextPageParam: (page: any) => page.meta.next,
   });
 
-export const useProductDeleteMutation = () => {
-  const queryClient = useQueryClient();
-
-  return useMutation({
-    mutationFn: deleteProduct,
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ['products'] });
-      toast.success('Product deleted!');
-    },
-    onError: () => {
-      toast.error('Error!');
-    },
-  });
-};
-
 export const useGetProductQuery = (id: number) => {
   return useQuery({
     queryKey: ['product'],
@@ -44,6 +29,18 @@ export const useGetProductQuery = (id: number) => {
     retry: false,
   });
 };
+
+export const useGetProductBySlugQuery = (slug: string) =>
+  useQuery({
+    queryKey: ['product'],
+    queryFn: async () => {
+      const { data } = await ecomApi.get<Product>(
+        `/products/get/slug/${slug}/`
+      );
+      return data;
+    },
+    retry: false,
+  });
 
 export const useProductCreateMutation = (navigate: NavigateFunction) => {
   const queryClient = useQueryClient();
@@ -87,6 +84,21 @@ export const useProductUpdateMutation = (navigate: NavigateFunction) => {
     onError: () => {
       toast.error('Error!');
       navigate('/admin');
+    },
+  });
+};
+
+export const useProductDeleteMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: deleteProduct,
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['products'] });
+      toast.success('Product deleted!');
+    },
+    onError: () => {
+      toast.error('Error!');
     },
   });
 };
