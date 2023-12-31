@@ -3,21 +3,23 @@
 import { useEffect } from 'react';
 import { useInView } from 'react-intersection-observer';
 
-import { ProductCard } from '@/ecommerce/shared/components';
+import { ProductList } from '@/ecommerce/shared/components';
 import { Loader } from '@/shared/components/ui';
-import { Product } from '@/shared/interfaces';
-import { useInfiniteQueryProducts } from '@/store/products';
+import { useInfiniteQueryProducts, useProductsStore } from '@/store/products';
+import { useSearchStore } from '@/store/search';
 
 export interface HomePageProps {}
 
 const HomePage: React.FC<HomePageProps> = () => {
-  const { ref, inView } = useInView();
+  const searchedProducts = useProductsStore(s => s.searchedProducts);
+  const searchTerm = useSearchStore(s => s.searchTerm);
+  const isSearching = useSearchStore(s => s.isSearching);
 
   ////* infinite scroll
+  const { ref, inView } = useInView();
   const { data, isLoading, isFetchingNextPage, fetchNextPage, hasNextPage } =
     useInfiniteQueryProducts();
 
-  ////* effects
   useEffect(() => {
     if (inView) {
       fetchNextPage();
@@ -27,26 +29,40 @@ const HomePage: React.FC<HomePageProps> = () => {
 
   return (
     <>
-      {data?.pages.map((page: any) => (
-        <div key={page.meta.next}>
-          <div className="flex justify-center">
-            <div className="p-8 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-3 gap-16">
-              {page.data.map((product: Product) => (
-                <ProductCard key={product.id} product={product} />
-              ))}
-            </div>
-          </div>
+      {searchTerm.length ? (
+        <>
+          {isSearching ? (
+            <Loader />
+          ) : (
+            <>
+              {searchedProducts.length ? (
+                <ProductList products={searchedProducts} />
+              ) : (
+                <div className="w-full h-screen text-white flex justify-center items-center text-2xl">
+                  No results
+                </div>
+              )}
+            </>
+          )}
+        </>
+      ) : (
+        <>
+          {data?.pages.map((page: any) => (
+            <div key={page.meta.next}>
+              <ProductList products={page.data} />
 
-          {!isLoading &&
-            data?.pages?.length !== undefined &&
-            data.pages.length > 0 &&
-            hasNextPage && (
-              <div ref={ref}>
-                {isLoading || isFetchingNextPage ? <Loader /> : <></>}
-              </div>
-            )}
-        </div>
-      ))}
+              {!isLoading &&
+                data?.pages?.length !== undefined &&
+                data.pages.length > 0 &&
+                hasNextPage && (
+                  <div ref={ref}>
+                    {isLoading || isFetchingNextPage ? <Loader /> : <></>}
+                  </div>
+                )}
+            </div>
+          ))}
+        </>
+      )}
     </>
   );
 };

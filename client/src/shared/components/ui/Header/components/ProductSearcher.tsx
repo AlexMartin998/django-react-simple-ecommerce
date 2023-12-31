@@ -1,6 +1,7 @@
+import { useRef, useState } from 'react';
+
 import { useProductsStore } from '@/store/products/products.store';
 import { useSearchStore } from '@/store/search';
-import { useRef, useState } from 'react';
 
 export type ProductSearcherProps = {};
 
