@@ -1,11 +1,16 @@
+import { useProductsStore } from '@/store/products/products.store';
 import { useSearchStore } from '@/store/search';
 import { useRef, useState } from 'react';
 
 export type ProductSearcherProps = {};
 
 const ProductSearcher: React.FC<ProductSearcherProps> = () => {
-  const setIsLoading = useSearchStore(s => s.setIsSearching);
   const [pristine, setPristine] = useState(true);
+
+  const setIsLoading = useSearchStore(s => s.setIsSearching);
+  const setSearchTerm = useSearchStore(s => s.setSearchTerm); // render searched elements
+
+  const searchProducts = useProductsStore(s => s.searchProducts);
 
   ///* debouncer
   const timerRef = useRef<ReturnType<typeof setTimeout>>();
@@ -13,7 +18,7 @@ const ProductSearcher: React.FC<ProductSearcherProps> = () => {
   ////* handlers
   const onChangeHandler = (e: React.ChangeEvent<HTMLInputElement>) => {
     const value = e.target.value.trim();
-    if (value === '') return;
+    if (!value) return setSearchTerm(''); // unmount searched elements
 
     // debounce
     if (timerRef) clearTimeout(timerRef.current);
@@ -21,9 +26,10 @@ const ProductSearcher: React.FC<ProductSearcherProps> = () => {
     timerRef.current = setTimeout(async () => {
       if (pristine) setPristine(false);
       setIsLoading(true);
+      setSearchTerm(value);
 
-      // TODO: fetch data and set it to store
-      console.log('Searching...');
+      // console.log('Searching...');
+      await searchProducts(value);
 
       setIsLoading(false);
     }, 610);
