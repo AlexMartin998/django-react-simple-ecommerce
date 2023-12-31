@@ -12,6 +12,7 @@ urlpatterns = [
     path('delete/<int:id>/', views.delete_product),
 
     path('search/', views.search),
+    path('get/slug/<slug:slug>/', views.get_product_by_slug),
     
 ]
 
