@@ -1,6 +1,9 @@
 import { Link } from 'react-router-dom';
 
 import { Product } from '@/shared/interfaces';
+import { getEnvs } from '@/shared/utils';
+
+const { VITE_API_URL } = getEnvs();
 
 export interface ProductCardProps {
   product: Product;
@@ -10,15 +13,17 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   return (
     <div>
       <div className="max-w-sm bg-white border border-gray-200 rounded-lg shadow dark:bg-gray-800 dark:border-gray-700">
-        <Link to={`/product/${product.name}`}>
+        <Link to={`/products/${product.slug}`}>
           <img
             className="rounded-t-lg"
-            src={`http://127.0.0.1:3300${product.image}`}
-            alt=""
+            src={`${VITE_API_URL}${product.image}`}
+            alt={`${product.slug}`}
+            draggable={false}
           />
         </Link>
+
         <div className="p-5 ">
-          <Link to={`/product/${product.name}`}>
+          <Link to={`/products/${product.slug}`}>
             <h5 className="mb-2 text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
               {product.name}
             </h5>
@@ -98,7 +103,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </button>
 
           <Link
-            to={`/product/${product.name}`}
+            to={`/products/${product.slug}`}
             className="inline-flex items-center mx-3
         px-3 py-2 text-sm font-medium text-center text-white 
         bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 
