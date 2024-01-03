@@ -103,6 +103,16 @@ export const useProductDeleteMutation = () => {
   });
 };
 
+export const useGetProductsByCategory = (category: string) => {
+  return useQuery({
+    queryKey: ['product'],
+    queryFn: async () => {
+      const { data } = await ecomApi.get(`/products/category/${category}`);
+      return data;
+    },
+  });
+};
+
 ////* actions
 export const searchProduct = async (query: string) => {
   const response = await ecomApiAuth.get<ProductsSearchResponse>(
