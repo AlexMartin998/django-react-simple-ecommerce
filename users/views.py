@@ -6,7 +6,7 @@ from django.db import IntegrityError
 
 
 from .models import User
-from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer
+from .serializers import RegisterUserSerializer, MyTokenObtainPairSerializer, UserSerializer
 
 
 @api_view(['POST'])
@@ -23,6 +23,14 @@ def register(request):
         return Response(serializer.data, status=201)
     except IntegrityError:
         return Response({'error': 'Email already registered'}, status=400)
+
+
+
+@api_view(['GET'])
+def get_users(request):
+    users = User.objects.exclude(email='admin@admin.com')
+    serializer = UserSerializer(users, many=True)
+    return Response(serializer.data)
 
 
 
