@@ -107,7 +107,9 @@ export const useGetProductsByCategory = (category: string) => {
   return useQuery({
     queryKey: ['product'],
     queryFn: async () => {
-      const { data } = await ecomApi.get(`/products/category/${category}`);
+      const { data } = await ecomApi.get<Product[]>(
+        `/products/category/${category}`
+      );
       return data;
     },
   });
