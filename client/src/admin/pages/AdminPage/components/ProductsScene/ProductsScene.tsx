@@ -6,11 +6,12 @@ import { useInView } from 'react-intersection-observer';
 import { Link } from 'react-router-dom';
 
 import { Loader } from '@/shared/components/ui';
+import { ProductsSearchResponse } from '@/shared/interfaces';
 import { useInfiniteQueryProducts } from '@/store/products';
 import { ProductsTBody } from '.';
 
 export type ProductsProps = {
-  results: any;
+  results?: ProductsSearchResponse;
 };
 
 const ProductsScene: React.FC<ProductsProps> = ({ results }) => {
