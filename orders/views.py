@@ -17,3 +17,27 @@ def get_orders(request):
     serializer = OrderSerializer(orders, many=True)
     return Response(serializer.data)
 
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_order(request, id):
+    user = request.user # auth
+    try:
+        order = Order.objects.get(pk = id)
+        # only admin & owner
+        if user.is_staff or order.user == user:
+            serializer = OrderSerializer(order, many = False)
+            return Response(serializer.data)
+        else:
+            return Response(
+                {'error': 'Unauthorized'},
+                status=status.HTTP_401_UNAUTHORIZED
+            )
+    except:
+        return Response(
+            {'error': f'Order with ID {id} does not exist'},
+            status = status.HTTP_404_NOT_FOUND
+        )
+
+
