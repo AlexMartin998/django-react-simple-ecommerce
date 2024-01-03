@@ -37,7 +37,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
               </h5>
               <div className="flex items-center">
                 <span className="ml-1 text-gray-500 dark:text-gray-400">
-                  {<Rating value={+product.rating! ?? 0} />}
+                  {<Rating value={+product.rating! || 0} />}
                 </span>
               </div>
             </div>

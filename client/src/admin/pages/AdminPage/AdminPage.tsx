@@ -4,7 +4,7 @@ import { toast } from 'react-hot-toast';
 
 import { searchProduct } from '@/store/products';
 import { searchUsers } from '@/store/users';
-import { Orders, ProductsScene, Users } from './components';
+import { Orders, ProductsScene, UsersScene } from './components';
 
 export interface AdminPageProps {}
 
@@ -104,7 +104,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
           {/* ============ Scenes ============ */}
           {show === 0 && <ProductsScene results={data} />}
           {show === 1 && <Orders />}
-          {show === 2 && <Users results={users} />}
+          {show === 2 && <UsersScene results={users} />}
         </div>
       </div>
     </section>
