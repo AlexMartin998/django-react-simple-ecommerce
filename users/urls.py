@@ -16,6 +16,12 @@ urlpatterns = [
 
 
     #
-    path('', views.get_users)
+    path('', views.get_users),
+    path('delete/<int:id>/', views.delete_user),
+
+
+    # search by URL Params: ?query=something
+    path('search/', views.search),
+
 ]
 
