@@ -14,6 +14,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   ////* queries
   // TODO: debouncer | set to store result and do not pass results by props, clear store when search input is clean
+  // podriamos setear a zustan el result asi no pasar x props a c/1
   const { data } = useQuery({
     queryKey: ['products', search],
     queryFn: async () => {

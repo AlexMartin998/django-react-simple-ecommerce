@@ -25,16 +25,7 @@ export interface AppRouterProps {}
 const AppRouter: React.FC<AppRouterProps> = () => {
   return (
     <BrowserRouter>
-      {/* ========= Public Routes ========= */}
       <Routes>
-        <Route path="/" element={<ShopLayout />}>
-          <Route index element={<HomePage />} />
-          <Route path="products/:slug" element={<ProductPage />} />
-          <Route path="cart" element={<CartPage />} />
-          <Route path="categories" element={<CategoriesPage />} />
-          <Route path="categories/:category" element={<CategoryPage />} />
-        </Route>
-
         {/* ========= Private Routes ========= */}
         <Route
           path="/dashboard"
@@ -76,6 +67,15 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           {/* ----- Products ----- */}
           <Route path="products/new" element={<NewProductPage />} />
           <Route path="products/edit/:id" element={<EditProductPage />} />
+        </Route>
+
+        {/* ========= Public Routes ========= */}
+        <Route path="/" element={<ShopLayout />}>
+          <Route index element={<HomePage />} />
+          <Route path="products/:slug" element={<ProductPage />} />
+          <Route path="cart" element={<CartPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="categories/:category" element={<CategoryPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />
