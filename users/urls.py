@@ -13,5 +13,9 @@ urlpatterns = [
 
     # enviamos 1 refreshToken para q nos d otro AccessToken y RefreshToken y asi vamos jugnado con el refreshtoken (cuando los usams o vencen, van a la blacklist)
     path('refresh/', TokenRefreshView.as_view()),
+
+
+    #
+    path('', views.get_users)
 ]
 
