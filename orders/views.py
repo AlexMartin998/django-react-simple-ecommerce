@@ -52,3 +52,55 @@ def get_my_orders(request):
 
 
 
+# ## Esta confiando en el precio q le manda el front, fix it
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_order(request):
+    user = request.user # auth
+    data = request.data # front
+    order_items_client = data['order_items']
+    total_price = data['total_price']
+
+    # ## Calc actual price
+    sum_of_prices = sum(
+        int(float(item['price'])) * item['quantity'] for item in order_items_client
+    )
+
+    # ## create order: Improve, validate prices in back, no the front prices
+    if total_price == sum_of_prices:
+        order = Order.objects.create(
+            user = user,
+            total_price = total_price
+        )
+        
+        ShippingAddress.objects.create(
+            order = order,
+            address = data['address'],
+            city = data['city'],
+            country = data['country'],
+            postal_code = data['postal_code'],
+        )
+        
+        for item_client in order_items_client:
+            product = Product.objects.get(id=item_client['id'])
+            item = OrderItem.objects.create(
+                product = product,
+                order = order,
+                name = product.name,
+                quantity = item_client['quiantity'],
+                price = item_client['price']
+            )
+            product.count_in_stock -= item.quantity
+            product.save()
+
+        # ## serialize created order
+        serializer = OrderSerializer(order, many = False)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    else:
+        return Response(
+            {'error': 'Unauthorized: Prices are manipulated'},
+            status = status.HTTP_401_UNAUTHORIZED
+        )
+
+
