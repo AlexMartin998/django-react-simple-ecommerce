@@ -3,6 +3,7 @@ from django.contrib.auth.hashers import make_password # hashear password
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import IntegrityError
+from rest_framework import status
 
 
 from .models import User
@@ -28,9 +29,13 @@ def register(request):
 
 @api_view(['GET'])
 def get_users(request):
-    users = User.objects.exclude(email='admin@admin.com')
-    serializer = UserSerializer(users, many=True)
-    return Response(serializer.data)
+    if request.user.is_staff: # isAdmin - Authorization
+        users = User.objects.exclude(email='admin@admin.com')
+        serializer = UserSerializer(users, many=True)
+        return Response(serializer.data)
+    else:
+        return Response({'error': 'Unauthorized'} ,status=status.HTTP_401_UNAUTHORIZED)
+        
 
 
 
