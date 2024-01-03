@@ -11,6 +11,7 @@ urlpatterns = [
     path('edit/<int:id>/', views.edit_product),
     path('delete/<int:id>/', views.delete_product),
 
+    # search by URL Params: ?query=something
     path('search/', views.search),
     path('get/slug/<slug:slug>/', views.get_product_by_slug),
 

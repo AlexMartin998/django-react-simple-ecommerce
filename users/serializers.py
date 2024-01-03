@@ -11,7 +11,7 @@ class UserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
         # fields tuple q podran ser consultados (se enviaran en la response del view)
-        fields = ('id', 'email', 'name', 'last_name') # specifying fields
+        fields = ["email", "name", "last_name", "id", "avatar"]
 
 
 class RegisterUserSerializer(serializers.ModelSerializer):

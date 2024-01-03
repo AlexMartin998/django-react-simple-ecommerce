@@ -4,6 +4,8 @@ from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from django.db import IntegrityError
 from rest_framework import status
+from django.shortcuts import get_object_or_404
+
 
 
 from .models import User
@@ -34,8 +36,33 @@ def get_users(request):
         serializer = UserSerializer(users, many=True)
         return Response(serializer.data)
     else:
-        return Response({'error': 'Unauthorized'} ,status=status.HTTP_401_UNAUTHORIZED)
-        
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+# ## Search by email (like = __contains)
+@api_view(['GET'])
+def search(request):
+    if request.user.is_staff: # isAdmin - Authorization
+        query = request.query_params.get('query')
+        if query is None:
+            query = ''
+        users = User.objects.filter(email__icontains=query)
+        serializer = UserSerializer(users, many=True)
+        return Response({'users': serializer.data}) 
+    else:
+        return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+@api_view(['DELETE'])
+def delete_user(request, id):
+    if request.user.is_staff: #isAdmin
+        user = get_object_or_404(User, pk=id)
+        user.delete()
+        return Response(status=status.HTTP_204_NO_CONTENT)
+    else:
+        return Response(status=status.HTTP_401_UNAUTHORIZED)
 
 
 
