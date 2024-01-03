@@ -41,3 +41,14 @@ def get_order(request, id):
         )
 
 
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def get_my_orders(request):
+    user = request.user
+    orders = user.order_set.all() # trae las orders del user x relacion (JOIN)
+    serializer = OrderSerializer(orders, many=True)
+    return Response(serializer.data)
+
+
+
+
