@@ -1,11 +1,11 @@
 import { InfiniteData } from '@tanstack/react-query';
 
-import { ProductsResponse } from '@/shared/interfaces';
+import { ProductsResponse, ProductsSearchResponse } from '@/shared/interfaces';
 import { ProductsTr } from '.';
 
 export type FetchedBodyProps = {
   data: InfiniteData<ProductsResponse> | undefined;
-  results: any;
+  results?: ProductsSearchResponse;
 };
 
 const ProductsTBody: React.FC<FetchedBodyProps> = ({ data, results }) => {
