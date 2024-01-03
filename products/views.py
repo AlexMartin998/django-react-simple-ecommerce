@@ -35,6 +35,13 @@ def get_product_by_slug(request, slug):
     return Response(serializer.data)
 
 
+@api_view(['GET'])
+def get_products_by_category(request, category):
+    products = Product.objects.filter(category=category)
+    serializer = ProductSerializer(products, many = True)
+    return Response(serializer.data)
+
+
 # ## Search
 @api_view(['GET'])
 def search(request):
