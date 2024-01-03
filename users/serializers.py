@@ -7,6 +7,13 @@ from .models import User
 
 
 # ### Serializer: Python to JSON  &  Deserialize: JSON to Python
+class UserSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        # fields tuple q podran ser consultados (se enviaran en la response del view)
+        fields = ('id', 'email', 'name', 'last_name') # specifying fields
+
+
 class RegisterUserSerializer(serializers.ModelSerializer):
     class Meta:
         model = User
