@@ -104,3 +104,15 @@ def create_order(request):
         )
 
 
+
+@api_view(['PUT'])
+@permission_classes([IsAdminUser])
+def delivered(request, id):
+    order = Order.objects.get(pk=id)
+    order.is_delivered = True
+    order.delivered_at = datetime.now()
+    order.save()
+    return Response('Order was delivered')
+
+
+
