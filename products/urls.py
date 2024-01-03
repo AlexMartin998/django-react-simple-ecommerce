@@ -13,6 +13,8 @@ urlpatterns = [
 
     path('search/', views.search),
     path('get/slug/<slug:slug>/', views.get_product_by_slug),
-    
+
+    path('category/<str:category>', views.get_products_by_category)
+
 ]
 
