@@ -13,9 +13,9 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   const [search, setSearch] = useState('');
 
   ////* queries
+  // TODO: debouncer | set to store result and do not pass results by props, clear store when search input is clean
   const { data } = useQuery({
     queryKey: ['products', search],
-    // TODO: debouncer | set to store result and do not pass results by props, clear store when search input is clean
     queryFn: async () => {
       //* detecta los cambios del state search y se ejecuta
       if (search && show === 0) {
@@ -30,8 +30,12 @@ const AdminPage: React.FC<AdminPageProps> = () => {
 
   const { data: users } = useQuery({
     queryKey: ['users', search],
-    queryFn: () => {
-      if (search && show === 2) return searchUsers(search);
+    queryFn: async () => {
+      if (search && show === 2) {
+        const res = await searchUsers(search);
+        if (!res.users.length) toast.error('Nothing found');
+        return res;
+      }
       return { users: [] };
     },
   });
