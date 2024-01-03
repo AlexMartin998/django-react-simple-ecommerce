@@ -2,7 +2,7 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 
 import { ecomApiAuth } from '@/shared/axios';
-import { User } from '@/shared/interfaces';
+import { SearchUsersResponse, User } from '@/shared/interfaces';
 
 export const useUserDeleteMutation = () => {
   const queryClient = useQueryClient();
@@ -19,6 +19,14 @@ export const useUserDeleteMutation = () => {
       toast.error('Error!');
     },
   });
+};
+
+////* actions
+export const searchUsers = async (query: string) => {
+  const response = await ecomApiAuth.get<SearchUsersResponse>(
+    `/users/search/?query=${query}`
+  );
+  return response.data;
 };
 
 export const getUsers = async () => {
