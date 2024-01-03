@@ -12,7 +12,13 @@ import { ShopLayout } from '@/ecommerce/layouts/ShopLayout';
 import { AdminPage, EditProductPage, NewProductPage } from '@/admin/pages';
 import { LoginPage, RegisterPage } from '@/auth/pages';
 import { ProfilePage } from '@/dashboard/pages';
-import { CartPage, HomePage, ProductPage } from '@/ecommerce/pages';
+import {
+  CartPage,
+  CategoriesPage,
+  CategoryPage,
+  HomePage,
+  ProductPage,
+} from '@/ecommerce/pages';
 
 export interface AppRouterProps {}
 
@@ -25,6 +31,8 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           <Route index element={<HomePage />} />
           <Route path="products/:slug" element={<ProductPage />} />
           <Route path="cart" element={<CartPage />} />
+          <Route path="categories" element={<CategoriesPage />} />
+          <Route path="categories/:category" element={<CategoryPage />} />
         </Route>
 
         {/* ========= Private Routes ========= */}

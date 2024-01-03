@@ -35,7 +35,7 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
 
   ////* handlers
   const onRegister: SubmitHandler<RegisterFormData> = async () => {
-    if (registerMutation.isPending) return;
+    if (registerMutation.isLoading) return;
     registerMutation.mutate();
   };
 
@@ -158,7 +158,7 @@ const RegisterPage: React.FC<RegisterPageProps> = () => {
           <button
             type="submit"
             className="w-full bg-blue-600 text-white px-4 py-2 mt-2 mb-4 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50 disabled:bg-gray-400"
-            disabled={registerMutation.isPending}
+            disabled={registerMutation.isLoading}
           >
             Register
           </button>
