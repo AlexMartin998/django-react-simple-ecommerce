@@ -12,6 +12,6 @@ urlpatterns = [
     path('deliver/<int:pk>/', views.delivered),
 
     # search by URL Params: ?query=something
-    path('search/', views.search),
+    # path('search/', views.search),
 
 ]

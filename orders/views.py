@@ -4,6 +4,10 @@ from rest_framework.response import Response
 from rest_framework import status
 from datetime import datetime
 
+# transactions in Django (@Transactional)
+from django.db import transaction
+
+
 from .models import Order, OrderItem, ShippingAddress
 from .serializers import OrderSerializer
 from products.models import Product
@@ -56,51 +60,57 @@ def get_my_orders(request):
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_order(request):
-    user = request.user # auth
-    data = request.data # front
-    order_items_client = data['order_items']
-    total_price = data['total_price']
+    # ## Transactions: like   @Transactional   in Spring Boot
+    try:
+        with transaction.atomic():
+            user = request.user # auth
+            data = request.data # front
+            order_items_client = data['order_items']
+            total_price = data['total_price']
 
-    # ## Calc actual price
-    sum_of_prices = sum(
-        int(float(item['price'])) * item['quantity'] for item in order_items_client
-    )
-
-    # ## create order: Improve, validate prices in back, no the front prices
-    if total_price == sum_of_prices:
-        order = Order.objects.create(
-            user = user,
-            total_price = total_price
-        )
-        
-        ShippingAddress.objects.create(
-            order = order,
-            address = data['address'],
-            city = data['city'],
-            country = data['country'],
-            postal_code = data['postal_code'],
-        )
-        
-        for item_client in order_items_client:
-            product = Product.objects.get(id=item_client['id'])
-            item = OrderItem.objects.create(
-                product = product,
-                order = order,
-                name = product.name,
-                quantity = item_client['quiantity'],
-                price = item_client['price']
+            # ## Calc actual price
+            sum_of_prices = sum(
+                int(float(item['price'])) * item['quantity'] for item in order_items_client
             )
-            product.count_in_stock -= item.quantity
-            product.save()
 
-        # ## serialize created order
-        serializer = OrderSerializer(order, many = False)
-        return Response(serializer.data, status=status.HTTP_201_CREATED)
+            # ## create order: Improve, validate prices in back, no the front prices
+            if total_price == sum_of_prices:
+                order = Order.objects.create(
+                    user = user,
+                    total_price = total_price
+                )
+                
+                ShippingAddress.objects.create(
+                    order = order,
+                    address = data['address'],
+                    city = data['city'],
+                    postal_code = data['postal_code'],
+                )
+                
+                for item_client in order_items_client:
+                    product = Product.objects.get(pk=item_client['id'])
+                    item = OrderItem.objects.create(
+                        product = product,
+                        order = order,
+                        quantity = item_client['quantity'],
+                        price = item_client['price']
+                    )
+                    product.count_in_stock -= item.quantity
+                    product.save()
 
-    else:
+                # ## serialize created order
+                serializer = OrderSerializer(order, many = False)
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+            else:
+                return Response(
+                    {'error': 'Unauthorized: Prices are manipulated'},
+                    status = status.HTTP_401_UNAUTHORIZED
+                )
+    except Exception as e:
         return Response(
-            {'error': 'Unauthorized: Prices are manipulated'},
-            status = status.HTTP_401_UNAUTHORIZED
+            {'error': 'Something went wrong'},
+            status=status.HTTP_500_INTERNAL_SERVER_ERROR
         )
 
 
