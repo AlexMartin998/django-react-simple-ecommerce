@@ -3,6 +3,7 @@ import { toast } from 'react-hot-toast';
 import { NavigateFunction } from 'react-router-dom';
 
 import { Order } from '@/shared/interfaces';
+import { useOrderStore } from '.';
 import { ecomApiAuth } from '../../shared/axios/ecomApi';
 
 export const useCreateOrderMutation = (
@@ -11,9 +12,12 @@ export const useCreateOrderMutation = (
 ) => {
   const queryClient = useQueryClient();
 
+  const setIsPaying = useOrderStore(s => s.setIsPaying);
+
   return useMutation({
-    mutationFn: async (data: Order) => {
-      await ecomApiAuth.post('/orders/create/', data);
+    mutationFn: async (orderData: Order) => {
+      setIsPaying(true);
+      return ecomApiAuth.post('/orders/create/', orderData);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ['orders'] });
@@ -24,6 +28,10 @@ export const useCreateOrderMutation = (
     onError: () => {
       toast.error('Error!');
       navigate('/');
+    },
+    // like Finally
+    onMutate: () => {
+      setIsPaying(false);
     },
   });
 };
