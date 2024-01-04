@@ -58,7 +58,28 @@ export const useCartStore = create(
         }));
       },
       removeFromCart: (item: Product) => {
-        console.log(item);
+        const cart = get().cart;
+        const cartItem = cart.find(itemInCart => itemInCart.id === item.id);
+
+        // upd item quantity
+        if (cartItem?.quantity && cartItem.quantity > 1) {
+          const updatedCart = cart.map(itemInCart =>
+            itemInCart.id === item.id
+              ? { ...itemInCart, quantity: itemInCart.quantity - 1 }
+              : itemInCart
+          );
+
+          return set(state => ({
+            cart: updatedCart,
+            totalPrice: state.totalPrice - +item.price,
+          }));
+        }
+
+        // remove item
+        set(state => ({
+          cart: state.cart.filter(itemInCart => itemInCart.id !== item.id),
+          totalPrice: state.totalPrice - +item.price,
+        }));
       },
       removeAll: () => {},
     }),
