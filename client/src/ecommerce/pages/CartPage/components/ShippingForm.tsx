@@ -1,8 +1,16 @@
-import { FormEvent, useState } from 'react';
+import { PayPalButtons, PayPalScriptProvider } from '@paypal/react-paypal-js';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 import { ProductCart } from '@/shared/interfaces';
-import { useCartStore, useCreateOrderMutation } from '@/store/cart';
+import { getEnvs } from '@/shared/utils';
+import {
+  useCartStore,
+  useCreateOrderMutation,
+  useOrderStore,
+} from '@/store/cart';
+
+const { PAYPAL_CLIENT_ID } = getEnvs();
 
 export type ShippingFormProps = {
   cart: ProductCart[];
@@ -14,27 +22,46 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ cart, totalPrice }) => {
 
   ///* Global State
   const clearCart = useCartStore(s => s.clearCart);
+  const isPaying = useOrderStore(s => s.isPaying);
 
   ///* form: TODO: use react-hook-form
   const [address, setAddress] = useState<string>('');
   const [city, setCity] = useState<string>('');
   const [postalCode, setPostalCode] = useState<string>('');
-
   ///* mutations
   const createOrderMutation = useCreateOrderMutation(navigate, clearCart);
 
   ///* handlers
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmit = () => {
+    // TODO: fix empy city,address,postalCode
     createOrderMutation.mutate({
       // asi lo espera el back
       order_items: cart,
       total_price: totalPrice,
-      address: address,
-      city: city,
+      address,
+      city,
       postal_code: postalCode,
     });
+  };
+
+  ///* PayPal
+  const createOrder = (_data: any, actions: any) => {
+    return actions.order.create({
+      purchase_units: [
+        {
+          amount: {
+            value: totalPrice, // zustand
+          },
+        },
+      ],
+      // no envios
+      application_context: {
+        shipping_preference: 'NO_SHIPPING',
+      },
+    });
+  };
+  const onApprove = (_data: any, actions: any) => {
+    return actions.order.capture(handleSubmit());
   };
 
   return (
@@ -44,7 +71,8 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ cart, totalPrice }) => {
       </h1>
 
       {/* ====== Form ====== */}
-      <form className="space-y-4 md:space-y-6" onSubmit={handleSubmit}>
+      <form className="space-y-4 md:space-y-6">
+        {/* --- Address --- */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Address
@@ -58,6 +86,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ cart, totalPrice }) => {
           />
         </div>
 
+        {/* --- City --- */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             City
@@ -71,6 +100,7 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ cart, totalPrice }) => {
           />
         </div>
 
+        {/* --- Postal Code --- */}
         <div>
           <label className="block mb-2 text-sm font-medium text-gray-900 dark:text-white">
             Postal code
@@ -84,17 +114,23 @@ const ShippingForm: React.FC<ShippingFormProps> = ({ cart, totalPrice }) => {
           />
         </div>
 
-        <button
-          type="submit"
-          className="flex mx-auto px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
-        >
-          Submit
-        </button>
-
         {/* =============== PayPal =============== */}
-        <div className="ml-[180px] text-3xl text-white">
-          {/* TODO: Paypal */}
-          PayPal Btn
+        <div className="ml-[180px]">
+          {!isPaying ? (
+            <PayPalScriptProvider
+              options={{
+                clientId: `${PAYPAL_CLIENT_ID || ''}`,
+              }}
+            >
+              <PayPalButtons
+                createOrder={(data, actions) => createOrder(data, actions)}
+                onApprove={(data, actions) => onApprove(data, actions)}
+                style={{ layout: 'horizontal' }} // just btn without debitcard
+              />
+            </PayPalScriptProvider>
+          ) : (
+            <p>Processing...</p>
+          )}
         </div>
       </form>
     </div>
