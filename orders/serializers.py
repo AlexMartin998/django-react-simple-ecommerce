@@ -24,7 +24,7 @@ class OrderSerializer(serializers.ModelSerializer):
     shipping_address = serializers.SerializerMethodField(read_only=True)
 
     class Meta:
-        model: Order
+        model = Order
         fields = '__all__'
 
     # # Methods para el   SerializerMethodField
