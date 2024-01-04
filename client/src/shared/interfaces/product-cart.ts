@@ -9,4 +9,5 @@ export interface ProductCart {
   num_reviews?: number;
   price: number;
   quantity: number;
+  slug: string;
 }
