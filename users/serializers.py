@@ -25,10 +25,13 @@ class RegisterUserSerializer(serializers.ModelSerializer):
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
     @classmethod
     def get_token(cls, user):
+        # ### set fields to jwt payload - how to send user and token instead of access/refresh???
         token = super().get_token(user)
         token['email'] = user.email # set email in JWT
         token['avatar'] = user.avatar.url
         token['is_staff'] = user.is_staff # isAdmin?
+        token['name'] = user.name
+        token['last_name'] = user.last_name
         return token
 
 
