@@ -1,3 +1,4 @@
+import { toast } from 'react-hot-toast';
 import { Link } from 'react-router-dom';
 
 import { Product } from '@/shared/interfaces';
@@ -13,6 +14,11 @@ export interface ProductCardProps {
 
 const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
   const addToCart = useCartStore(s => s.addToCart);
+
+  const onAddToCart = (product: Product) => {
+    addToCart(product);
+    toast.success('Product added to cart');
+  };
 
   return (
     <div>
@@ -47,7 +53,7 @@ const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
           </p>
 
           <button
-            onClick={() => addToCart(product)}
+            onClick={() => onAddToCart(product)}
             className="inline-flex items-center mx-3 px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Add to Cart
