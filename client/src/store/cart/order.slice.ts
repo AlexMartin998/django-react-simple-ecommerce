@@ -1,10 +1,20 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { NavigateFunction } from 'react-router-dom';
 
 import { Order } from '@/shared/interfaces';
 import { useOrderStore } from '.';
 import { ecomApiAuth } from '../../shared/axios/ecomApi';
+
+export const useGetMyOrders = () => {
+  return useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      const { data } = await ecomApiAuth.get<any[]>('/orders/my/');
+      return data;
+    },
+  });
+};
 
 export const useCreateOrderMutation = (
   navigate: NavigateFunction,
