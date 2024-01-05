@@ -46,7 +46,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class ShippingSerializer(serializers.ModelSerializer):
     class Meta:
-        model: ShippingAddress
+        model = ShippingAddress
         fields = '__all__'
 
 
