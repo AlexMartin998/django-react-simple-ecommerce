@@ -2,7 +2,11 @@ import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 import { NavigateFunction } from 'react-router-dom';
 
-import { Order, OrderResponse } from '@/shared/interfaces';
+import {
+  Order,
+  OrderResponse,
+  SearchOrdersResponse,
+} from '@/shared/interfaces';
 import { useOrderStore } from '.';
 import { ecomApiAuth } from '../../shared/axios/ecomApi';
 
@@ -88,5 +92,12 @@ export const useCompleteOrderMutation = () => {
 ///* Actions
 export const getOrders = async () => {
   const { data } = await ecomApiAuth.get<OrderResponse[]>('/orders/');
+  return data;
+};
+
+export const searchOrder = async (query: string) => {
+  const { data } = await ecomApiAuth.get<SearchOrdersResponse>(
+    `/orders/search/?query=${query}`
+  );
   return data;
 };
