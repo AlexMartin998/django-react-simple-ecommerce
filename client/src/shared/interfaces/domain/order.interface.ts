@@ -15,3 +15,11 @@ export interface OrderItem {
   price: string;
   order: number;
 }
+
+export interface ShippingAddress {
+  id: number;
+  address: string;
+  city: string;
+  postal_code: string;
+  order: number;
+}
