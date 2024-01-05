@@ -16,6 +16,16 @@ export const useGetMyOrders = () => {
   });
 };
 
+export const useGetOrdersQuery = () => {
+  return useQuery({
+    queryKey: ['orders'],
+    queryFn: async () => {
+      const { data } = await ecomApiAuth.get<any[]>('/orders/');
+      return data;
+    },
+  });
+};
+
 export const useGetOrderQuery = (id: number) =>
   useQuery({
     queryKey: ['orders'],
@@ -56,4 +66,10 @@ export const useCreateOrderMutation = (
       setIsPaying(false);
     },
   });
+};
+
+///* Actions
+export const getOrders = async () => {
+  const { data } = await ecomApiAuth.get<OrderResponse[]>('/orders/');
+  return data;
 };
