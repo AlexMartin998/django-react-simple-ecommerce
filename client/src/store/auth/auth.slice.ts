@@ -1,11 +1,12 @@
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { NavigateFunction } from 'react-router-dom';
 
 import { RegisterFormData } from '@/auth/pages/RegisterPage/RegisterPage';
 import { LoginResponse } from '@/auth/shared/interfaces';
-import { ecomApi } from '@/shared/axios';
+import { ecomApi, ecomApiAuth } from '@/shared/axios';
+import { User } from '@/shared/interfaces';
 import { useAuthStore } from '.';
 
 export const useRegisterUser = (
@@ -56,3 +57,36 @@ export const useLogin = (loginData: any, reset?: Function) => {
 };
 
 ///* TODO: no usa 1 refreshToken desde aqui en el AppRouter como FH, implementarlo para el /refresh
+
+export const useEditProfileMutation = (
+  setModalOpen: (value: boolean) => void
+) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (userLike: any) => {
+      const formData = new FormData();
+      formData.append('name', userLike.name);
+      formData.append('last_name', userLike.last_name);
+      formData.append('email', userLike.email);
+      if (userLike.avatar && userLike.updImg)
+        formData.append('avatar', userLike.avatar);
+
+      return ecomApiAuth.put(`/users/edit/${userLike.id}/`, formData);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['users'] });
+      toast.success('Profile updated!');
+      setModalOpen(false);
+    },
+    onError: () => {
+      toast.error('Error!');
+    },
+  });
+};
+
+///* actions
+export const getUser = async (id: number) => {
+  const response = await ecomApiAuth.get<User>(`/users/get/${id}/`);
+  return response.data;
+};
