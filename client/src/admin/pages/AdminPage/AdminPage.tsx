@@ -2,7 +2,7 @@ import { useQuery } from '@tanstack/react-query';
 import { useState } from 'react';
 import { toast } from 'react-hot-toast';
 
-import { getOrders } from '@/store/cart';
+import { searchOrder } from '@/store/cart';
 import { searchProduct } from '@/store/products';
 import { searchUsers } from '@/store/users';
 import { OrdersScene, ProductsScene, UsersScene } from './components';
@@ -43,11 +43,15 @@ const AdminPage: React.FC<AdminPageProps> = () => {
   });
 
   const { data: orders } = useQuery({
-    queryKey: ['orders'],
+    queryKey: ['orders', search],
     queryFn: async () => {
-      const res = await getOrders();
-      if (!res.length) toast.error('Nothing found');
-      return res;
+      //* detecta los cambios del state search y se ejecuta
+      if (search && show === 1) {
+        const res = await searchOrder(search);
+        if (!res.orders.length) toast.error('Nothing found');
+        return res;
+      }
+      return { orders: [] };
     },
   });
 

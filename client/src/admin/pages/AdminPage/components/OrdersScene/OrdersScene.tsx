@@ -2,12 +2,12 @@ import { useQuery } from '@tanstack/react-query';
 import { toast } from 'react-hot-toast';
 
 import { Loader } from '@/shared/components/ui';
-import { OrderResponse } from '@/shared/interfaces';
+import { SearchOrdersResponse } from '@/shared/interfaces';
 import { getOrders } from '@/store/cart';
-import { OrdersTr } from '.';
+import { OrdersTBody } from '.';
 
 export interface OrderSceneProps {
-  results?: OrderResponse[];
+  results?: SearchOrdersResponse;
 }
 
 const OrdersScene: React.FC<OrderSceneProps> = ({ results }) => {
@@ -61,13 +61,7 @@ const OrdersScene: React.FC<OrderSceneProps> = ({ results }) => {
         </thead>
 
         {/* ============ Table Body ============  */}
-        <tbody>
-          {results?.length ? (
-            <OrdersTr data={results} />
-          ) : (
-            <OrdersTr data={data} />
-          )}
-        </tbody>
+        <OrdersTBody data={data} results={results} />
       </table>
     </div>
   );

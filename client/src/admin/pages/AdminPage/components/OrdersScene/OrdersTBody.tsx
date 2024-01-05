@@ -1,15 +1,19 @@
-import { OrderResponse } from '@/shared/interfaces';
+import { OrderResponse, SearchOrdersResponse } from '@/shared/interfaces';
 import { OrdersTr } from '.';
 
 export type OrdersTBodyProps = {
   data: OrderResponse[];
-  results?: any;
+  results?: SearchOrdersResponse;
 };
 
 const OrdersTBody: React.FC<OrdersTBodyProps> = ({ data, results }) => {
   return (
     <tbody>
-      {results.length ? <OrdersTr data={results} /> : <OrdersTr data={data} />}
+      {results?.orders?.length ? (
+        <OrdersTr data={results.orders} />
+      ) : (
+        <>{data?.length && <OrdersTr data={data} />}</>
+      )}
     </tbody>
   );
 };
