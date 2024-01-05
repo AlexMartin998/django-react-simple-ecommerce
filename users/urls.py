@@ -17,6 +17,7 @@ urlpatterns = [
 
     #
     path('', views.get_users),
+    path('get/<int:id>/', views.get_user),
     path('delete/<int:id>/', views.delete_user),
     path('edit/<int:id>/', views.edit_profile),
 
