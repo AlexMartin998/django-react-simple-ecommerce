@@ -1,18 +1,17 @@
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useQuery } from '@tanstack/react-query';
 import { useEffect, useRef, useState } from 'react';
 import { SubmitHandler, useForm } from 'react-hook-form';
 
 import { InputErrorMessage } from '@/shared/components/forms';
-import { Loader } from '@/shared/components/ui';
+import { User } from '@/shared/interfaces';
 import { getEnvs, updateProfileFormSchema } from '@/shared/utils';
-import { getUser, useEditProfileMutation } from '@/store/auth';
+import { useEditProfileMutation } from '@/store/auth';
 import { useUiStore } from '@/store/ui';
 
 const { VITE_API_URL } = getEnvs();
 
 export type ProfileFormProps = {
-  userId: number;
+  user: User;
 };
 
 export type SaveProfileFormData = {
@@ -20,7 +19,7 @@ export type SaveProfileFormData = {
   last_name: string;
 };
 
-const ProfileForm: React.FC<ProfileFormProps> = ({ userId }) => {
+const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   const setModalOpen = useUiStore(s => s.setModalOpen);
 
   ///* local state
@@ -30,13 +29,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userId }) => {
   const fileInputRef = useRef<HTMLInputElement>(null);
   // upd image
   const [imgWasChanged, setImgWasChanged] = useState(false);
-
-  ////* mutation & query
-  // TODO: use stored user (login fetch user by id?) to view changes without re signin
-  const { data: user, isLoading } = useQuery({
-    queryKey: ['users', userId],
-    queryFn: () => getUser(userId),
-  });
 
   const editProfileMutation = useEditProfileMutation(setModalOpen);
 
@@ -95,8 +87,6 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ userId }) => {
     setIsHovered(false);
     setImgWasChanged(true);
   };
-
-  if (isLoading || !user) return <Loader />;
 
   return (
     <div className="p-11 relative">
