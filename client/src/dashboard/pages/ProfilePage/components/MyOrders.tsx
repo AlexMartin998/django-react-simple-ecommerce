@@ -42,7 +42,7 @@ const MyOrders: React.FC<MyOrdersProps> = ({
                   </th>
                   <td className="px-4 py-3">
                     <Link
-                      to={`/order/${order.id}/`}
+                      to={`/dashboard/orders/${order.id}`}
                       className="p-2 cursor-pointer rounded-lg bg-gray-900 hover:bg-gray-700"
                     >
                       View

@@ -17,6 +17,7 @@ import {
   CategoriesPage,
   CategoryPage,
   HomePage,
+  OrderPage,
   ProductPage,
 } from '@/ecommerce/pages';
 
@@ -36,6 +37,7 @@ const AppRouter: React.FC<AppRouterProps> = () => {
           }
         >
           <Route path="profile" element={<ProfilePage />} />
+          <Route path="orders/:id" element={<OrderPage />} />
           <Route path="" element={<Navigate to="/" replace />} />
         </Route>
 
