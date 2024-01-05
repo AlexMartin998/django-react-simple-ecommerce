@@ -1,5 +1,8 @@
 import { Token } from '@/auth/shared/interfaces';
+import { getEnvs } from '@/shared/utils';
 import { useUiStore } from '@/store/ui';
+
+const { VITE_API_URL } = getEnvs();
 
 export type ProfileCardProps = {
   decodedToken: Token | null;
@@ -12,8 +15,7 @@ const ProfileCard: React.FC<ProfileCardProps> = ({ decodedToken }) => {
     <div className="flex flex-col items-center pb-10">
       <img
         className="pb-5"
-        // src={`${VITE_API_URL}/${'avatar'}`}
-        src="/avatar-1.jpeg"
+        src={`${VITE_API_URL}${decodedToken?.avatar}`}
         alt="user image"
       />
       <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
