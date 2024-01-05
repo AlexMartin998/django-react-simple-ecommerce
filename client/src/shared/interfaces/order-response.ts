@@ -1,12 +1,12 @@
-import { OrderItem } from '.';
+import { OrderItem, ShippingAddress } from '.';
 
 export interface OrderResponse {
   id: number;
   user: string;
   order_items: OrderItem[];
-  shipping_address: boolean;
+  shipping_address: ShippingAddress;
   total_price: string;
   is_delivered: boolean;
-  delivered_at: null;
+  delivered_at: string;
   created_at: string;
 }
