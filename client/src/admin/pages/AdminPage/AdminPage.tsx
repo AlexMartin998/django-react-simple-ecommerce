@@ -42,6 +42,7 @@ const AdminPage: React.FC<AdminPageProps> = () => {
     },
   });
 
+  // search by user email
   const { data: orders } = useQuery({
     queryKey: ['orders', search],
     queryFn: async () => {
