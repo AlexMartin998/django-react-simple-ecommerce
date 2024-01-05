@@ -67,6 +67,7 @@ def create_order(request):
             data = request.data # front
             order_items_client = data['order_items']
             total_price = data['total_price']
+            print(data)
 
             # ## Calc actual price
             sum_of_prices = sum(
