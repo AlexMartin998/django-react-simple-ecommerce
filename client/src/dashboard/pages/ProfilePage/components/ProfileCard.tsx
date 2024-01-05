@@ -1,28 +1,28 @@
-import { Token } from '@/auth/shared/interfaces';
+import { User } from '@/shared/interfaces';
 import { getEnvs } from '@/shared/utils';
 import { useUiStore } from '@/store/ui';
 
 const { VITE_API_URL } = getEnvs();
 
 export type ProfileCardProps = {
-  decodedToken: Token | null;
+  user: User;
 };
 
-const ProfileCard: React.FC<ProfileCardProps> = ({ decodedToken }) => {
+const ProfileCard: React.FC<ProfileCardProps> = ({ user }) => {
   const setModalOpen = useUiStore(s => s.setModalOpen);
 
   return (
     <div className="flex flex-col items-center pb-10">
       <img
         className="pb-5"
-        src={`${VITE_API_URL}${decodedToken?.avatar}`}
+        src={`${VITE_API_URL}${user?.avatar}`}
         alt="user image"
       />
       <h5 className="mb-1 text-xl font-medium text-gray-900 dark:text-white">
-        {decodedToken?.name}
+        {user?.name}
       </h5>
       <span className="text-sm text-gray-500 dark:text-gray-400">
-        {decodedToken?.email}
+        {user?.email}
       </span>
 
       <div className="flex mt-4 md:mt-6">
