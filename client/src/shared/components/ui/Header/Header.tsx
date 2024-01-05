@@ -4,18 +4,19 @@ import { Fragment } from 'react';
 import { HiOutlineShoppingBag } from 'react-icons/hi';
 import { Link } from 'react-router-dom';
 
-// import { getEnvs } from '@/shared/utils';
+import { getEnvs } from '@/shared/utils';
 import { useAuthStore } from '@/store/auth';
 import { useCartStore } from '@/store/cart';
 import { DarkModeToggle, MobileNavbar, ProductSearcher } from './components';
 
-// const { VITE_API_URL } = getEnvs();
+const { VITE_API_URL } = getEnvs();
 
 export interface HeaderProps {}
 
 const Header: React.FC<HeaderProps> = () => {
   const isAuth = useAuthStore(s => s.isAuth);
   const isAdmin = useAuthStore(s => s.isAdmin);
+  const user = useAuthStore(s => s.user);
   const logout = useAuthStore(s => s.logout);
   const cart = useCartStore(s => s.cart);
 
@@ -169,8 +170,8 @@ const Header: React.FC<HeaderProps> = () => {
                       <span className="sr-only">Open user menu</span>
                       <img
                         className="h-8 w-8 rounded-full object-cover"
-                        // src={`${VITE_API_URL}/${'avatar'}`}
-                        src="/avatar-1.jpeg"
+                        src={`${VITE_API_URL}${user?.avatar}`}
+                        // src="/avatar-1.jpeg"
                         alt="avatar"
                       />
                     </Menu.Button>
