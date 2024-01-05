@@ -55,6 +55,18 @@ def get_my_orders(request):
 
 
 
+# ## search
+@api_view(['GET'])
+@permission_classes([IsAdminUser])
+def search(request):
+    query = request.query_params.get('query')
+    if query is None:
+        query = ''
+    order = Order.objects.filter(user__email__icontains=query)
+    serializer = OrderSerializer(order, many=True)
+    return Response({'orders': serializer.data})
+
+
 
 # ## Esta confiando en el precio q le manda el front, fix it
 @api_view(['POST'])
