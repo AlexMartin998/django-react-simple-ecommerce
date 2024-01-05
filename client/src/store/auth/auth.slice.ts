@@ -1,4 +1,4 @@
-import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { isAxiosError } from 'axios';
 import { toast } from 'react-hot-toast';
 import { NavigateFunction } from 'react-router-dom';
@@ -39,13 +39,13 @@ export const useLogin = (loginData: any, reset?: Function) => {
     mutationFn: async () => {
       return ecomApi.post<LoginResponse>('/users/login/', loginData);
     },
-    onSuccess: res => {
+    onSuccess: async res => {
       const { access, refresh } = res.data;
 
       toast.success('Successful login');
       reset && reset();
 
-      setAuthToken(access, refresh);
+      await setAuthToken(access, refresh);
     },
     onError: err => {
       if (isAxiosError(err)) return toast.error(err.response?.data.detail);
@@ -81,6 +81,19 @@ export const useEditProfileMutation = (
     },
     onError: () => {
       toast.error('Error!');
+    },
+  });
+};
+
+export const useGetUserQuery = (id: number) => {
+  const setUser = useAuthStore(s => s.setUser);
+
+  return useQuery({
+    queryKey: ['users', id],
+    queryFn: async () => {
+      const user = await getUser(id);
+      setUser(user);
+      return user;
     },
   });
 };
