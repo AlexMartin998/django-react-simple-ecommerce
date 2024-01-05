@@ -9,6 +9,8 @@ type State = {
   refresh: string;
   isAuth: boolean;
   isAdmin: boolean;
+
+  decodedToken: Token | null;
 };
 
 type Actions = {
@@ -26,10 +28,12 @@ export const useAuthStore = create<State & Actions>()(
       refresh: '',
       isAuth: false,
       isAdmin: false,
+      decodedToken: null,
 
       ////* actions
       // LoginLike
       setToken(access: string, refresh: string) {
+        // x como me lo envia Django
         const tokenDecoded: Token = jwtDecode(access);
 
         set(() => ({
@@ -37,6 +41,7 @@ export const useAuthStore = create<State & Actions>()(
           refresh,
           isAuth: !!access && !!refresh,
           isAdmin: (!!access && !!refresh && tokenDecoded.is_staff) || false,
+          decodedToken: tokenDecoded,
         }));
       },
       logout() {
