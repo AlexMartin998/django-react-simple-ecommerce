@@ -1,3 +1,3 @@
-export { default as Orders } from './Orders';
+export * from './OrdersScene';
 export * from './ProductsScene';
 export * from './UsersScene';
