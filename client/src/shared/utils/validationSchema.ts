@@ -58,3 +58,13 @@ export const newProductFormSchema = yup.object({
   category: yup.string().required('Category is required'),
   description: yup.string().required('Description is required'),
 });
+
+////* Products
+export const updateProfileFormSchema = yup.object({
+  name: yup.string().required('Name is required'),
+  last_name: yup
+    .string()
+    .required('Name is requiered')
+    .min(2, 'Min 2 characteres')
+    .max(30, 'Max 12 characteres'),
+});
