@@ -68,6 +68,23 @@ export const useCreateOrderMutation = (
   });
 };
 
+export const useCompleteOrderMutation = () => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: number) => {
+      return ecomApiAuth.put(`/orders/deliver/${id}/`);
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ['orders'] });
+      toast.success('Order delivered!');
+    },
+    onError: () => {
+      toast.error('Error!');
+    },
+  });
+};
+
 ///* Actions
 export const getOrders = async () => {
   const { data } = await ecomApiAuth.get<OrderResponse[]>('/orders/');
