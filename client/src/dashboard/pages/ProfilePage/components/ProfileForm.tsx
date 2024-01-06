@@ -30,6 +30,7 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   // upd image
   const [imgWasChanged, setImgWasChanged] = useState(false);
 
+  ////* mutation & query
   const editProfileMutation = useEditProfileMutation(setModalOpen);
 
   ////* form
@@ -47,7 +48,8 @@ const ProfileForm: React.FC<ProfileFormProps> = ({ user }) => {
   useEffect(() => {
     reset(user);
     setImage(user?.avatar as any);
-  }, [reset, user]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   ////* handlers
   const onSave: SubmitHandler<SaveProfileFormData> = formData => {
