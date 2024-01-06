@@ -1,7 +1,10 @@
+import { toast } from 'react-hot-toast';
 import { Navigate, useParams } from 'react-router-dom';
 
+import { Reviews } from '@/ecommerce/shared/components';
 import { Loader } from '@/shared/components/ui';
 import { getEnvs } from '@/shared/utils';
+import { useCartStore } from '@/store/cart';
 import { useGetProductBySlugQuery } from '@/store/products';
 
 const { VITE_API_URL } = getEnvs();
@@ -10,10 +13,19 @@ export interface ProductPageProps {}
 
 const ProductPage: React.FC<ProductPageProps> = () => {
   const { slug } = useParams();
+
+  const addToCart = useCartStore(s => s.addToCart);
+
   const { data, isLoading } = useGetProductBySlugQuery(slug!);
 
   if (isLoading) return <Loader />;
   if (!data?.id) return <Navigate to="/" replace />;
+
+  // handlers
+  const onAddToCart = () => {
+    addToCart(data);
+    toast.success('Product added to cart');
+  };
 
   return (
     <div className="bg-white dark:bg-gray-900">
@@ -26,8 +38,8 @@ const ProductPage: React.FC<ProductPageProps> = () => {
 
           <p className="mb-4 font-bold">{data.description}</p>
 
-          <a
-            href="#"
+          <button
+            onClick={onAddToCart}
             className="inline-flex items-center px-3 py-2 text-sm font-medium text-center text-white bg-blue-700 rounded-lg hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 dark:bg-blue-600 dark:hover:bg-blue-700 dark:focus:ring-blue-800"
           >
             Add to Cart
@@ -44,7 +56,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
                 clipRule="evenodd"
               ></path>
             </svg>
-          </a>
+          </button>
         </div>
 
         <img
@@ -55,7 +67,7 @@ const ProductPage: React.FC<ProductPageProps> = () => {
         />
       </div>
 
-      {/* <Reviews productId={data.id} reviews={data.reviews} /> */}
+      <Reviews productId={data.id} reviews={data.reviews} />
     </div>
   );
 };
