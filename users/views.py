@@ -42,13 +42,14 @@ def get_users(request):
 
 @api_view(['GET'])
 def get_user(request, id):
+    # TODO: set user in Auth - Token
     try:
-        if request.user.is_staff: # isAdmin - Authorization
-            users = User.objects.get(pk=id)
-            serializer = UserSerializer(users, many=False)
-            return Response(serializer.data)
-        else:
-            return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
+        # if request.user.is_staff: # isAdmin - Authorization
+        users = User.objects.get(pk=id)
+        serializer = UserSerializer(users, many=False)
+        return Response(serializer.data)
+        # else:
+            # return Response({'error': 'Unauthorized'}, status=status.HTTP_401_UNAUTHORIZED)
     except User.DoesNotExist:
         return Response({'error': 'User not found'}, status=status.HTTP_404_NOT_FOUND)
 
