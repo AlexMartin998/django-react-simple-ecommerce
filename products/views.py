@@ -1,11 +1,13 @@
 from rest_framework.response import Response
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
 from rest_framework import status
 from django.shortcuts import get_object_or_404
 from django.utils.text import slugify
+from rest_framework.permissions import IsAuthenticated
+
 
 from .models import Product
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ReviewSerializer
 
 from backend.pagination import CustomPagination
 
@@ -94,4 +96,19 @@ def delete_product(request, id):
         return Response(status=status.HTTP_204_NO_CONTENT)
     else:
         return Response(status=status.HTTP_401_UNAUTHORIZED)
+
+
+
+
+# ### Reviews
+@api_view(['POST'])
+@permission_classes([IsAuthenticated])
+def create_review(request, id):
+    serializer = ReviewSerializer(data=request.data)
+    product = get_object_or_404(Product, pk=id)
+    if serializer.is_valid():
+        serializer.save(user=request.user, product=product)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
+    else:
+        return Response(serializer.data, status=status.HTTP_400_BAD_REQUEST)
 
